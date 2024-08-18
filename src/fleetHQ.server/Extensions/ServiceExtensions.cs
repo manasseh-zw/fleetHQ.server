@@ -1,7 +1,9 @@
 using System.Text;
 
+using FleetHQ.Server.Authorization;
 using FleetHQ.Server.Configuration;
 using FleetHQ.Server.Repository;
+using FleetHQ.Server.Repository.Models;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -38,5 +40,20 @@ public static class ServiceExtensions
                     )
         });
 
+    }
+
+    public static void ConfigureAuthorization(this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            foreach (var feature in Features.All)
+            {
+                options.AddPolicy($"{feature}_View", policy =>
+                    policy.Requirements.Add(new AccessControlRequirement(feature, Access.View)));
+
+                options.AddPolicy($"{feature}_Edit", policy =>
+                    policy.Requirements.Add(new AccessControlRequirement(feature, Access.Edit)));
+            }
+        });
     }
 }

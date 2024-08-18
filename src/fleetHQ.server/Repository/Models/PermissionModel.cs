@@ -26,6 +26,12 @@ public static class Features
     public const string FuelUsage = "FuelUsage";
     public const string Documents = "Documents";
     public const string Settings = "Settings";
+
+    public static readonly List<string> All =
+    [
+        Vehicles, Drivers, Bookings, Expenses, Reports,
+        Places, FuelUsage, Documents, Settings
+    ];
 }
 
 public enum Access

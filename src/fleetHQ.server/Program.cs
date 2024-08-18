@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.ConfigurePostgres();
     builder.Services.ConfigureAuthentication();
+    builder.Services.ConfigureAuthorization();
 
     builder.Services.Scan(x =>
         x.FromAssemblies(typeof(Program).Assembly)
