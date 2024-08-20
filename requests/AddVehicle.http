@@ -1,5 +1,8 @@
-POST {{baseUrl}}/vehicles
+POST   {{baseUrl}}/vehicles
 Content-Type: application/json
-Authorization: Bearer {{managerToken}} 
+Authorization: Bearer {{managerToken}}
 
-"subaru"
+
+{
+    
+}

@@ -1,94 +1,35 @@
+namespace FleetHQ.Server.Domains.Auth;
 using FleetHQ.Server.Repository.Models;
 
 public static class RoleFactory
 {
-    public static RoleModel Manager()
+  public static RoleModel Manager()
+  {
+    return new RoleModel
     {
-        return new()
-        {
-            Name = "Manager",
-            Permissions = [
-                new PermissionModel()
-                {
-                    Feature = new()
-                    {
-                        Name = AppFeatures.Vehicles
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.Drivers,
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.Bookings,
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.Expenses,
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.Service,
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.Places,
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.Documents,
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.FuelUsage,
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.Settings,
-                    },
-                    Access = Access.Edit,
-                },
-                new PermissionModel()
-                {
-                    Feature = new(){
-                      Name = AppFeatures.Reports,
-                    },
-                    Access = Access.Edit,
-                }
+      Name = "Manager",
+      Permissions =
+            [
+                new() { { Features.Vehicles, Permission.Write } },
+                new() { { Features.Drivers, Permission.Write } },
+                new() { { Features.Bookings, Permission.Write } },
+                new() { { Features.Expenses, Permission.Write } },
+                new() { { Features.Service, Permission.Write } },
+                new() { { Features.Places, Permission.Write } },
+                new() { { Features.Documents, Permission.Write } },
+                new() { { Features.FuelUsage, Permission.Write } },
+                new() { { Features.Settings, Permission.Write } },
+                new() { { Features.Reports, Permission.Write } }
             ]
-        };
-    }
+    };
+  }
 
-    public static RoleModel Default()
+  public static RoleModel Default()
+  {
+    return new RoleModel
     {
-        return new()
-        {
-            Name = "default",
-            Permissions = []
-        };
-    }
+      Name = "Default",
+      Permissions = []
+    };
+  }
 }

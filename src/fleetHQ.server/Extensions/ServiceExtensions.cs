@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
+using Npgsql;
+
 namespace FleetHQ.Server.Extensions;
 
 public static class ServiceExtensions
@@ -18,7 +20,12 @@ public static class ServiceExtensions
     public static void ConfigurePostgres(this IServiceCollection services)
     {
         services.AddDbContext<RepositoryContext>(
-            options => options.UseNpgsql(Appsettings.DatabaseOptions.Postgres));
+            options =>
+            {
+                var db = new NpgsqlDataSourceBuilder(Appsettings.DatabaseOptions.Postgres);
+                db.EnableDynamicJson();
+                options.UseNpgsql(db.Build());
+            });
     }
 
 
@@ -33,6 +40,7 @@ public static class ServiceExtensions
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
+
             ValidateIssuerSigningKey = true,
             ValidIssuer = Appsettings.JwtOptions.Issuer,
             ValidAudience = Appsettings.JwtOptions.Audience,
@@ -46,16 +54,16 @@ public static class ServiceExtensions
     public static void ConfigureAuthorization(this IServiceCollection services)
     {
         services.AddAuthorization(options =>
-        {
-            foreach (var feature in AppFeatures.All)
-            {
-                options.AddPolicy($"{feature}View", policy =>
-                    policy.Requirements.Add(new AccessControlRequirement(feature, Access.View)));
-                options.AddPolicy($"{feature}Edit", policy =>
-                    policy.Requirements.Add(new AccessControlRequirement(feature, Access.Edit)));
-            }
-        });
+       {
+           foreach (var feature in Features.All)
+           {
+               options.AddPolicy($"{feature}.Read", policy =>
+                   policy.Requirements.Add(new PermissionRequirement(feature, Permission.Read)));
+               options.AddPolicy($"{feature}.Write", policy =>
+                   policy.Requirements.Add(new PermissionRequirement(feature, Permission.Write)));
+           }
+       });
 
-        services.AddScoped<IAuthorizationHandler, AccessControlHandler>();
+        services.AddScoped<IAuthorizationHandler, PermissionsAuthorizationHandler>();
     }
 }

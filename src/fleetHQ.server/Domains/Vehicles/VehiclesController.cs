@@ -1,3 +1,6 @@
+using FleetHQ.Server.Authorization;
+using FleetHQ.Server.Repository.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,14 +11,14 @@ namespace FleetHQ.Server.Domains.Vehicles;
 public class VehiclesController : ControllerBase
 {
     [HttpGet]
-    [Authorize(Policy = "VehiclesView")]
+    [Authorize(Policy = "Vehicles.Read")]
     public IActionResult GetVehicles()
     {
         return Ok("GetVehicles Success");
     }
 
     [HttpPost]
-    [Authorize(Policy = "VehiclesEdit")]
+    [Authorize(Policy = "Vehicles.Write")]
     public IActionResult AddVehicle(string vehicle)
     {
         return Ok("AddVehicle Success" + vehicle);
