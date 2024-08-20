@@ -1,6 +1,9 @@
 using FleetHQ.Server.Configuration;
 using FleetHQ.Server.Exceptions;
 using FleetHQ.Server.Extensions;
+using FleetHQ.Server.Helpers;
+
+using Microsoft.AspNetCore.Mvc;
 
 using Scrutor;
 
@@ -24,9 +27,25 @@ var builder = WebApplication.CreateBuilder(args);
         .WithScopedLifetime()
     );
 
-    builder.Services.AddExceptionHandler<ExceptionHandler>();
+
+    builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
     builder.Services.AddControllers();
+
+    builder.Services.Configure<ApiBehaviorOptions>(options =>
+    {
+        options.InvalidModelStateResponseFactory = (actionContext) =>
+        {
+            var errors = actionContext.ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            var errorResult = XResult.Failure(errors);
+            return new BadRequestObjectResult(errorResult);
+        };
+    });
+
 
     builder.Services.AddCors();
 
@@ -36,8 +55,6 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.UseHttpsRedirection();
-    
-    app.UseAuthorization();
 
     app.MapControllers().RequireAuthorization();
 

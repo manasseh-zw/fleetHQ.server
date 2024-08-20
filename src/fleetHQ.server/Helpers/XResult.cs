@@ -47,6 +47,6 @@ public struct XResult
 public record Error
 {
     public int Code { get; set; }
-    public string[] Messages { get; set; } = [];
+    public List<string> Messages { get; set; } = [];
 }
 

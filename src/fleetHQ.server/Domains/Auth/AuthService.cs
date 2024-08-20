@@ -40,7 +40,7 @@ public class AuthService(RepositoryContext repository, IJwtTokenManager jwtToken
             ContactNumber = dto.ContactNumber,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             OnBoarding = OnBoarding.Company,
-            Role = RoleFactory.Default()
+            Role = RoleFactory.Manager()
         };
 
 

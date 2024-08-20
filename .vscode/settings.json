@@ -3,7 +3,11 @@
         "$shared": {
         },
         "Dev":{
-            "baseUrl":"http://localhost:5200"
+            "baseUrl":"http://localhost:5200/api",
+            
+            "defaultToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEyOTIzY2EwLWU4MjYtNGQ3Ny04ZjNhLWNiY2NlNjRiOGZmMyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IjljMzYwZTE4LWNjODQtNDQyOS04Y2QxLWYyMTVmYjcwMGNjZiIsImV4cCI6MTcyNjY4Njc5NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MjAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.SNW1RiIHlEAym8VeUk6W22TpRg54zgrapBNkbMWmzbE",
+
+            "managerToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImQ1NTI4ZjMwLTQzN2ItNGVmYy05MGQ4LTkxYWI1NWU0OWNlMiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ijg3ODJmYzI1LWVmMTMtNGNmMC1hZWNhLTNiZmEzOGMwOTA4OSIsImV4cCI6MTcyNjY4NjgzMywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MjAwIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.G8lzKwYKCbY22oETFQ8vpbyMxGmlFb8C65-N7qzKk78"
         }
     }
 }

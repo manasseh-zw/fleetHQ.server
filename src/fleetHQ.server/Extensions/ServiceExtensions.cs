@@ -6,6 +6,7 @@ using FleetHQ.Server.Repository;
 using FleetHQ.Server.Repository.Models;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -46,14 +47,15 @@ public static class ServiceExtensions
     {
         services.AddAuthorization(options =>
         {
-            foreach (var feature in Features.All)
+            foreach (var feature in AppFeatures.All)
             {
-                options.AddPolicy($"{feature}_View", policy =>
+                options.AddPolicy($"{feature}View", policy =>
                     policy.Requirements.Add(new AccessControlRequirement(feature, Access.View)));
-
-                options.AddPolicy($"{feature}_Edit", policy =>
+                options.AddPolicy($"{feature}Edit", policy =>
                     policy.Requirements.Add(new AccessControlRequirement(feature, Access.Edit)));
             }
         });
+
+        services.AddScoped<IAuthorizationHandler, AccessControlHandler>();
     }
 }

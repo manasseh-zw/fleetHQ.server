@@ -1,6 +1,7 @@
 using System.Security.Claims;
 
 using FleetHQ.Server.Repository;
+using FleetHQ.Server.Repository.Models;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -17,33 +18,32 @@ public class AccessControlHandler(RepositoryContext repository) : AuthorizationH
         var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var roleId = context.User.FindFirst(ClaimTypes.Role)?.Value;
 
-        if (userId == null || roleId == null)
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(roleId))
         {
-            context.Fail();
             return;
         }
 
         var userRole = await _repository.Users
-        .AsNoTracking()
-        .Where(u => u.Id == Guid.Parse(userId))
-        .Select(x => x.Role).Include(x => x.Permissions)
-        .FirstOrDefaultAsync();
+       .AsNoTracking()
+       .Where(u => u.Id == Guid.Parse(userId))
+       .Select(x => new
+       {
+           x.Role.Permissions
+       })
+       .FirstOrDefaultAsync();
 
-        if (userRole == null)
+        if (userRole?.Permissions == null)
         {
-            context.Fail();
             return;
         }
 
-        var permission = userRole.Permissions.FirstOrDefault(p => p.Feature == requirement.Feature);
+        var permission = userRole.Permissions.FirstOrDefault(p => p.Feature.Name == requirement.Feature);
 
-        if (permission != null && permission.Access >= requirement.RequiredAccess)
+        if (permission != null && ((requirement.RequiredAccess == Access.View &&
+            (permission.Access == Access.View || permission.Access == Access.Edit)) ||
+             (requirement.RequiredAccess == Access.Edit && permission.Access == Access.Edit)))
         {
             context.Succeed(requirement);
-        }
-        else
-        {
-            context.Fail();
         }
 
     }

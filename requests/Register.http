@@ -1,0 +1,10 @@
+POST {{baseUrl}}/auth/register 
+Content-Type: application/json
+
+{
+    "email":"manasseh@gmail.com",
+    "password":"Manaboy@729",
+    "firstName":"King",
+    "lastName":"changa",
+    "ContactNumber":"0782997209"
+} 

@@ -10,49 +10,75 @@ public static class RoleFactory
             Permissions = [
                 new PermissionModel()
                 {
-                    Feature = Features.Settings,
+                    Feature = new()
+                    {
+                        Name = AppFeatures.Vehicles
+                    },
                     Access = Access.Edit,
                 },
                 new PermissionModel()
                 {
-                    Feature = Features.Bookings,
+                    Feature = new(){
+                      Name = AppFeatures.Drivers,
+                    },
                     Access = Access.Edit,
                 },
                 new PermissionModel()
                 {
-                    Feature = Features.Expenses,
+                    Feature = new(){
+                      Name = AppFeatures.Bookings,
+                    },
                     Access = Access.Edit,
                 },
                 new PermissionModel()
                 {
-                    Feature = Features.Drivers,
+                    Feature = new(){
+                      Name = AppFeatures.Expenses,
+                    },
                     Access = Access.Edit,
                 },
                 new PermissionModel()
                 {
-                    Feature = Features.Documents,
+                    Feature = new(){
+                      Name = AppFeatures.Service,
+                    },
                     Access = Access.Edit,
                 },
                 new PermissionModel()
                 {
-                    Feature = Features.FuelUsage,
+                    Feature = new(){
+                      Name = AppFeatures.Places,
+                    },
                     Access = Access.Edit,
                 },
                 new PermissionModel()
                 {
-                    Feature = Features.Places,
+                    Feature = new(){
+                      Name = AppFeatures.Documents,
+                    },
                     Access = Access.Edit,
                 },
                 new PermissionModel()
                 {
-                    Feature = Features.Vehicles,
+                    Feature = new(){
+                      Name = AppFeatures.FuelUsage,
+                    },
                     Access = Access.Edit,
                 },
                 new PermissionModel()
                 {
-                    Feature = Features.Vehicles,
+                    Feature = new(){
+                      Name = AppFeatures.Settings,
+                    },
                     Access = Access.Edit,
                 },
+                new PermissionModel()
+                {
+                    Feature = new(){
+                      Name = AppFeatures.Reports,
+                    },
+                    Access = Access.Edit,
+                }
             ]
         };
     }
