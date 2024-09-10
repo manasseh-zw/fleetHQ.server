@@ -1,8 +1,6 @@
 POST   {{baseUrl}}/vehicles
 Content-Type: application/json
 Authorization: Bearer {{managerToken}}
-
-
 {
     
 }

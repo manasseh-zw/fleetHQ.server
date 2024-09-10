@@ -2,7 +2,7 @@ using FleetHQ.Server.Helpers;
 
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace FleetHQ.Server.Exceptions;
+namespace FleetHQ.Server.Middleware;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {

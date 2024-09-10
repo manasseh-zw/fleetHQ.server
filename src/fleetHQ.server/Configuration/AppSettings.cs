@@ -11,6 +11,8 @@ public class Appsettings
 
 public class JwtOptions
 {
+    public string AccessToken { get; set; } = string.Empty;
+    public string RefreshToken { get; set; } = string.Empty;
     public string Issuer { get; set; } = string.Empty;
     public string Audience { get; set; } = string.Empty;
     public string Secret { get; set; } = string.Empty;

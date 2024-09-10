@@ -1,52 +1,70 @@
 namespace FleetHQ.Server.Helpers;
 
+public interface IXResult
+{
+    public bool IsSuccess { get; set; }
+}
+
+public struct Success<T> : IXResult
+{
+    public bool IsSuccess { get; set; }
+    public T? Data { get; set; }
+    public string? Message { get; set; }
+}
+
+public struct Error : IXResult
+{
+    public bool IsSuccess { get; set; }
+    public int Code { get; set; }
+    public List<string> Messages { get; set; }
+}
+
 public struct XResult
 {
-    public XResult
-       (bool isSuccess, string? message = default, object? data = default, Error? error = default)
+    public static Success<T> Ok<T>(T data, string message)
     {
-        if (isSuccess && error != null || !isSuccess && error == null)
+        return new Success<T>()
         {
-            throw new ArgumentException("invalid result");
+            IsSuccess = true,
+            Data = data,
+            Message = message
         };
-
-        IsSuccess = isSuccess;
-        Message = message;
-        Data = data;
-        Error = error;
+    }
+    public static Success<T> Ok<T>(T data)
+    {
+        return new Success<T>()
+        {
+            IsSuccess = true,
+            Data = data,
+        };
     }
 
-
-    public bool IsSuccess { get; set; }
-    public string? Message { get; set; }
-    public object? Data { get; set; }
-    public Error? Error { get; set; }
-
-    public static XResult Success<T>(string message, T data)
-    => new(isSuccess: true, message: message, data: data);
-
-    public static XResult Success<T>(T data)
-     => new(isSuccess: true, data: data);
-
-    public static XResult Success(string message)
-    => new(isSuccess: true, message: message);
-
-    public static XResult Failure(List<string> errors) => new(isSuccess: false, error: new()
+    public static Success<T> Ok<T>(string message)
     {
-        Code = 400,
-        Messages = [.. errors]
-    });
+        return new Success<T>()
+        {
+            IsSuccess = true,
+            Message = message
+        };
+    }
 
-    public static XResult Exception(string exception) => new(isSuccess: false, error: new()
+    public static Error Fail(List<string> messages)
     {
-        Code = 500,
-        Messages = [exception]
-    });
-}
+        return new Error()
+        {
+            IsSuccess = false,
+            Code = 400,
+            Messages = messages
+        };
+    }
 
-public record Error
-{
-    public int Code { get; set; }
-    public List<string> Messages { get; set; } = [];
+    public static Error Exception(string message)
+    {
+        return new Error()
+        {
+            IsSuccess = false,
+            Code = 500,
+            Messages = [message]
+        };
+    }
 }
-

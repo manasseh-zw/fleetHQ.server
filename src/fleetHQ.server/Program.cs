@@ -1,7 +1,7 @@
 using FleetHQ.Server.Configuration;
-using FleetHQ.Server.Exceptions;
 using FleetHQ.Server.Extensions;
 using FleetHQ.Server.Helpers;
+using FleetHQ.Server.Middleware;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,11 +41,10 @@ var builder = WebApplication.CreateBuilder(args);
                 .Select(e => e.ErrorMessage)
                 .ToList();
 
-            var errorResult = XResult.Failure(errors);
+            var errorResult = XResult.Fail(errors);
             return new BadRequestObjectResult(errorResult);
         };
     });
-
 
     builder.Services.AddCors();
 
@@ -54,11 +53,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
-    app.UseHttpsRedirection();
 
     app.MapControllers().RequireAuthorization();
 
-    app.UseCors(p => p.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+    app.UseCors(p => p.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
+
+    app.UseHttpsRedirection();
 
     app.UseExceptionHandler(options => { });
 }

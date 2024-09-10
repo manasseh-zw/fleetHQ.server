@@ -4,6 +4,7 @@ using FleetHQ.Server.Authorization;
 using FleetHQ.Server.Configuration;
 using FleetHQ.Server.Repository;
 using FleetHQ.Server.Repository.Models;
+using FleetHQ.Server.Shared;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,12 +20,11 @@ public static class ServiceExtensions
 
     public static void ConfigurePostgres(this IServiceCollection services)
     {
+        var db = new NpgsqlDataSourceBuilder(Appsettings.DatabaseOptions.Postgres).EnableDynamicJson().Build();
         services.AddDbContext<RepositoryContext>(
             options =>
             {
-                var db = new NpgsqlDataSourceBuilder(Appsettings.DatabaseOptions.Postgres);
-                db.EnableDynamicJson();
-                options.UseNpgsql(db.Build());
+                options.UseNpgsql(db);
             });
     }
 
@@ -34,20 +34,30 @@ public static class ServiceExtensions
         services.AddAuthentication(options =>
         {
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer("Bearer", options => options.TokenValidationParameters = new TokenValidationParameters
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer("Bearer", options =>
         {
-            SaveSigninToken = true,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                SaveSigninToken = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = Appsettings.JwtOptions.Issuer,
+                ValidAudience = Appsettings.JwtOptions.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(Appsettings.JwtOptions.Secret)
+                        )
+            };
+        }
+        );
 
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = Appsettings.JwtOptions.Issuer,
-            ValidAudience = Appsettings.JwtOptions.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(Appsettings.JwtOptions.Secret)
-                    )
-        });
+
 
     }
 

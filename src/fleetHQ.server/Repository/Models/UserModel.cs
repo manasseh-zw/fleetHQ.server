@@ -9,8 +9,7 @@ public class UserModel
     public Guid Id { get; set; }
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
+    public string FullName { get; set; } = string.Empty;
     public string ContactNumber { get; set; } = string.Empty;
     public OnBoarding OnBoarding { get; set; }
 
@@ -18,11 +17,15 @@ public class UserModel
     public Guid RoleId { get; set; }
     public RoleModel Role { get; set; } = new();
 
+    [ForeignKey(nameof(CompanyModel))]
+    public Guid? CompanyId { get; set; }
+    public CompanyModel? Company { get; set; } 
+
     public DateTime CreatedOn { get; } = DateTime.UtcNow;
 }
 public enum OnBoarding
 {
-    Profile,
+    account,
     Company,
     Vehicle,
     Complete
