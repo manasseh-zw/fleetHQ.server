@@ -10,7 +10,10 @@ public interface IVehicleService
 {
     Task<IXResult> AddVehicle(Guid companyId, AddVehicleDto dto);
     Task<IXResult> GetVehicles(Guid companyId);
+    Task<IXResult> UpdateVehicle(Guid vehicleId, UpdateVehicleDto dto);
+    Task<IXResult> DeleteVehicle(Guid vehicleId);
 }
+
 public class VehicleService(RepositoryContext repository) : IVehicleService
 {
     private readonly RepositoryContext _repository = repository;
@@ -66,5 +69,47 @@ public class VehicleService(RepositoryContext repository) : IVehicleService
         }).ToListAsync();
 
         return XResult.Ok(vehicles);
+    }
+
+    public async Task<IXResult> UpdateVehicle(Guid vehicleId, UpdateVehicleDto dto)
+    {
+        var vehicle = await _repository.Vehicles.FindAsync(vehicleId);
+
+        if (vehicle == null)
+        {
+            return XResult.Fail(["Vehicle not found"]);
+        }
+
+        vehicle.Type = dto.Type;
+        vehicle.Year = dto.Year;
+        vehicle.Make = dto.Make;
+        vehicle.Model = dto.Model;
+        vehicle.LicensePlate = dto.LicensePlate;
+
+        var validationResult = new VehicleValidator().Validate(vehicle);
+
+        if (!validationResult.IsValid)
+        {
+            return XResult.Fail(validationResult.Errors.Select(x => x.ErrorMessage).ToList());
+        }
+
+        await _repository.SaveChangesAsync();
+
+        return XResult.Ok("", "Vehicle updated successfully!");
+    }
+
+    public async Task<IXResult> DeleteVehicle(Guid vehicleId)
+    {
+        var vehicle = await _repository.Vehicles.FindAsync(vehicleId);
+
+        if (vehicle == null)
+        {
+            return XResult.Fail(["Vehicle not found"]);
+        }
+
+        _repository.Vehicles.Remove(vehicle);
+        await _repository.SaveChangesAsync();
+
+        return XResult.Ok("", "Vehicle deleted successfully!");
     }
 }

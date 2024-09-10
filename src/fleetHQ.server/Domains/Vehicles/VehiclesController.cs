@@ -1,4 +1,3 @@
-
 using System.Security.Claims;
 
 using FleetHQ.Server.Repository.Models;
@@ -39,6 +38,17 @@ public class VehiclesController(IVehicleService service) : ControllerBase
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
+    [HttpPut("{vehicleId}")]
+    public async Task<IActionResult> UpdateVehicle(Guid vehicleId, [FromBody] UpdateVehicleDto dto)
+    {
+        var result = await _service.UpdateVehicle(vehicleId, dto);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
 
-
+    [HttpDelete("{vehicleId}")]
+    public async Task<IActionResult> DeleteVehicle(Guid vehicleId)
+    {
+        var result = await _service.DeleteVehicle(vehicleId);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
 }

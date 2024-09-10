@@ -11,5 +11,6 @@ public class CompanyModel
     public List<VehicleModel> Vehicles { get; set; } = [];
     public List<DriverModel> Drivers { get; set; } = [];
     public List<UserModel> Users { get; set; } = [];
+    public List<BookingModel> Bookings { get; set; } = [];
 
 }

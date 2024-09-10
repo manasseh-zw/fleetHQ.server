@@ -14,6 +14,10 @@ public class BookingModel
     public int PassengerCount { get; set; }
     public DateTime Time { get; set; }
 
+    [ForeignKey(nameof(CompanyModel))]
+    public Guid CompanyId { get; set; }
+    public CompanyModel Company { get; set; } = new();
+
     [ForeignKey(nameof(DriverModel))]
     public Guid? DriverId { get; set; }
     public DriverModel? Driver { get; set; }
