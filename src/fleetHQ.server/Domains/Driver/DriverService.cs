@@ -12,6 +12,8 @@ public interface IDriverService
     Task<IXResult> GetDrivers(Guid companyId);
     Task<IXResult> UpdateDriver(Guid driverId, UpdateDriverDto dto);
     Task<IXResult> DeleteDriver(Guid driverId);
+    Task<IXResult> DeleteDrivers(DeleteDriversDto dto);
+
 }
 
 public class DriverService(RepositoryContext repository) : IDriverService
@@ -113,5 +115,22 @@ public class DriverService(RepositoryContext repository) : IDriverService
         await _repository.SaveChangesAsync();
 
         return XResult.Ok("", "Driver deleted successfully!");
+    }
+
+    public async Task<IXResult> DeleteDrivers(DeleteDriversDto dto)
+    {
+        var drivers = await _repository.Vehicles
+            .Where(v => dto.DriverIds.Contains(v.Id))
+            .ToListAsync();
+
+        if (drivers.Count == 0)
+        {
+            return XResult.Fail(["No drivers found for deletion"]);
+        }
+
+        _repository.Vehicles.RemoveRange(drivers);
+        await _repository.SaveChangesAsync();
+
+        return XResult.Ok("", $"{drivers.Count} drivers deleted successfully!");
     }
 }

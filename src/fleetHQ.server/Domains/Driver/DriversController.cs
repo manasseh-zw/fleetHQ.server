@@ -1,5 +1,7 @@
 using System.Security.Claims;
+
 using FleetHQ.Server.Shared;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,6 +50,14 @@ public class DriversController : ControllerBase
     public async Task<IActionResult> DeleteDriver(Guid driverId)
     {
         var result = await _service.DeleteDriver(driverId);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+
+    [HttpPost("delete-bulk")]
+    public async Task<IActionResult> DeleteDrivers([FromBody] DeleteDriversDto dto)
+    {
+        var result = await _service.DeleteDrivers(dto);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }

@@ -12,6 +12,7 @@ public interface IVehicleService
     Task<IXResult> GetVehicles(Guid companyId);
     Task<IXResult> UpdateVehicle(Guid vehicleId, UpdateVehicleDto dto);
     Task<IXResult> DeleteVehicle(Guid vehicleId);
+    Task<IXResult> DeleteVehicles(DeleteVehiclesDto dto);
 }
 
 public class VehicleService(RepositoryContext repository) : IVehicleService
@@ -46,7 +47,18 @@ public class VehicleService(RepositoryContext repository) : IVehicleService
         await _repository.Vehicles.AddAsync(vehicle);
         await _repository.SaveChangesAsync();
 
-        return XResult.Ok("", "Vehicle added!");
+        var response = new VehicleDto
+        {
+            Id = vehicle.Id,
+            LicensePlate = vehicle.LicensePlate,
+            Make = vehicle.Make,
+            Model = vehicle.Make,
+            Type = vehicle.Type,
+            Year = vehicle.Year,
+            Seats = vehicle.Seats
+        };
+
+        return XResult.Ok(response, "Vehicle added!");
     }
 
     public async Task<IXResult> GetVehicles(Guid companyId)
@@ -95,7 +107,19 @@ public class VehicleService(RepositoryContext repository) : IVehicleService
 
         await _repository.SaveChangesAsync();
 
-        return XResult.Ok("", "Vehicle updated successfully!");
+        var response = new VehicleDto
+        {
+            Id = vehicle.Id,
+            LicensePlate = vehicle.LicensePlate,
+            Make = vehicle.Make,
+            Model = vehicle.Make,
+            Type = vehicle.Type,
+            Year = vehicle.Year,
+            Seats = vehicle.Seats
+        };
+
+
+        return XResult.Ok(response, "Vehicle updated successfully!");
     }
 
     public async Task<IXResult> DeleteVehicle(Guid vehicleId)
@@ -111,5 +135,22 @@ public class VehicleService(RepositoryContext repository) : IVehicleService
         await _repository.SaveChangesAsync();
 
         return XResult.Ok("", "Vehicle deleted successfully!");
+    }
+
+    public async Task<IXResult> DeleteVehicles(DeleteVehiclesDto dto)
+    {
+        var vehicles = await _repository.Vehicles
+            .Where(v => dto.VehicleIds.Contains(v.Id))
+            .ToListAsync();
+
+        if (!vehicles.Any())
+        {
+            return XResult.Fail(["No vehicles found for deletion"]);
+        }
+
+        _repository.Vehicles.RemoveRange(vehicles);
+        await _repository.SaveChangesAsync();
+
+        return XResult.Ok("", $"{vehicles.Count} vehicles deleted successfully!");
     }
 }

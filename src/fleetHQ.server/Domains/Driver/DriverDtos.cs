@@ -26,5 +26,11 @@ public record DriverDto
     public DateTime HireDate { get; set; }
     public Guid? VehicleId { get; set; }
     public DateTime CreatedOn { get; set; }
+
 }
 
+
+public record DeleteDriversDto
+{
+    public List<Guid> DriverIds { get; set; } = [];
+}

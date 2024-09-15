@@ -38,7 +38,7 @@ public class VehiclesController(IVehicleService service) : ControllerBase
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
-    [HttpPut("{vehicleId}")]
+    [HttpPost("{vehicleId}")]
     public async Task<IActionResult> UpdateVehicle(Guid vehicleId, [FromBody] UpdateVehicleDto dto)
     {
         var result = await _service.UpdateVehicle(vehicleId, dto);
@@ -49,6 +49,13 @@ public class VehiclesController(IVehicleService service) : ControllerBase
     public async Task<IActionResult> DeleteVehicle(Guid vehicleId)
     {
         var result = await _service.DeleteVehicle(vehicleId);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpPost("delete-bulk")]
+    public async Task<IActionResult> DeleteVehicles([FromBody] DeleteVehiclesDto dto)
+    {
+        var result = await _service.DeleteVehicles(dto);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }

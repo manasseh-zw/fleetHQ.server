@@ -28,3 +28,8 @@ public record UpdateVehicleDto
     public string Model { get; set; } = string.Empty;
     public string LicensePlate { get; set; } = string.Empty;
 }
+
+public record DeleteVehiclesDto
+{
+    public List<Guid> VehicleIds { get; set; } = [];
+}
