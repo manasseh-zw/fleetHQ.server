@@ -39,7 +39,7 @@ public class DriversController : ControllerBase
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
-    [HttpPut("{driverId}")]
+    [HttpPost("{driverId}")]
     public async Task<IActionResult> UpdateDriver(Guid driverId, [FromBody] UpdateDriverDto dto)
     {
         var result = await _service.UpdateDriver(driverId, dto);

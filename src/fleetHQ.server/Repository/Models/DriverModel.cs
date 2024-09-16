@@ -15,7 +15,7 @@ public class DriverModel
 
     [ForeignKey(nameof(CompanyModel))]
     public Guid CompanyId { get; set; }
-    public CompanyModel Company { get; set; } = new();
+    public CompanyModel? Company { get; set; }
 
     [ForeignKey(nameof(VehicleModel))]
     public Guid? VehicleId { get; set; }

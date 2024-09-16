@@ -48,7 +48,16 @@ public class DriverService(RepositoryContext repository) : IDriverService
         await _repository.Drivers.AddAsync(driver);
         await _repository.SaveChangesAsync();
 
-        return XResult.Ok("", "Driver added successfully!");
+        var response = new DriverDto
+        {
+            Id = driver.Id,
+            FullName = driver.FullName,
+            ContactNumber = driver.ContactNumber,
+            Address = driver.Address,
+            HireDate = driver.HireDate,
+        };
+
+        return XResult.Ok(response, "Driver added successfully!");
     }
 
     public async Task<IXResult> GetDrivers(Guid companyId)
@@ -99,7 +108,16 @@ public class DriverService(RepositoryContext repository) : IDriverService
 
         await _repository.SaveChangesAsync();
 
-        return XResult.Ok("", "Driver updated successfully!");
+        var response = new DriverDto
+        {
+            Id = driver.Id,
+            FullName = driver.FullName,
+            ContactNumber = driver.ContactNumber,
+            Address = driver.Address,
+            HireDate = driver.HireDate,
+        };
+
+        return XResult.Ok(response, "Driver updated successfully!");
     }
 
     public async Task<IXResult> DeleteDriver(Guid driverId)
@@ -119,8 +137,8 @@ public class DriverService(RepositoryContext repository) : IDriverService
 
     public async Task<IXResult> DeleteDrivers(DeleteDriversDto dto)
     {
-        var drivers = await _repository.Vehicles
-            .Where(v => dto.DriverIds.Contains(v.Id))
+        var drivers = await _repository.Drivers
+            .Where(d => dto.DriverIds.Contains(d.Id))
             .ToListAsync();
 
         if (drivers.Count == 0)
@@ -128,7 +146,7 @@ public class DriverService(RepositoryContext repository) : IDriverService
             return XResult.Fail(["No drivers found for deletion"]);
         }
 
-        _repository.Vehicles.RemoveRange(drivers);
+        _repository.Drivers.RemoveRange(drivers);
         await _repository.SaveChangesAsync();
 
         return XResult.Ok("", $"{drivers.Count} drivers deleted successfully!");
