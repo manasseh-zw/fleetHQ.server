@@ -14,24 +14,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the code
       - uses: actions/checkout@v4
 
+      # Set up .NET Core SDK
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
+      # Build the solution
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build src/fleetHQ.server/fleetHQ.server.csproj --configuration Release
 
+      # Publish the build to a directory
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish src/fleetHQ.server/fleetHQ.server.csproj -c Release -o ${{ github.workspace }}/published_app
 
+      # Upload the published app as an artifact for the deployment job
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{ github.workspace }}/published_app
 
   deploy:
     runs-on: ubuntu-latest
@@ -40,26 +45,28 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
+      # Download the artifact from the build job
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+
+      # Log in to Azure using the credentials in GitHub Secrets
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A4CD61D9444D40AAB35E23F41B5A97EB }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F49D312A3D914BA880CDAD3F319E211F }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B1F5B5A85A79482E85D4104C83F73588 }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # Deploy the app to Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'fleethq-server'
-          slot-name: 'Production'
-          package: .
-          
+          slot-name: 'Production'  # Use 'Production' slot or leave empty if no slot
+          package: ${{ github.workspace }}/published_app
